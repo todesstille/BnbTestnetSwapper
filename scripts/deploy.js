@@ -8,7 +8,7 @@ const hre = require("hardhat");
 
 async function main() {
   const DexeToken = await hre.ethers.getContractFactory("DexeToken");
-  const Swapper = await hre.ethers.getContractFactory("TestBnbSwapper");
+  const Swapper = await hre.ethers.getContractFactory("SwapperTestBnb");
   const token = await DexeToken.deploy();
   await token.deployed();
   console.log(

@@ -5,18 +5,18 @@ function toWei(amount) {
   return ethers.utils.parseUnits(amount, 18);
 }
 
-describe("TestBnbSwapper", function () {
+describe("SwapperTestBnb", function () {
 
   let owner, alice, bob;
 
-  let Proxy, MockToken, TestBnbSwapper;
+  let Proxy, MockToken, SwapperTestBnb;
   let dexeToken;
 
   before(async () => {
     [admin, alice, bob] = await ethers.getSigners();
     Proxy = await ethers.getContractFactory("ERC1967Proxy");
     Dexe = await ethers.getContractFactory("DexeToken");
-    Swapper = await ethers.getContractFactory("TestBnbSwapper");
+    Swapper = await ethers.getContractFactory("SwapperTestBnb");
   })
 
   beforeEach(async () => {
@@ -29,17 +29,17 @@ describe("TestBnbSwapper", function () {
     let proxy;
     beforeEach(async () => {
       erc1967 = await Proxy.deploy(swapper.address, "0x");
-      proxy = await ethers.getContractAt("TestBnbSwapper", erc1967.address);
-      await proxy.__TestBnbSwapper_init(dexe.address);
+      proxy = await ethers.getContractAt("SwapperTestBnb", erc1967.address);
+      await proxy.__SwapperTestBnb_init(dexe.address);
     });
     it("cant initialize twice", async () => {
-      await expect(proxy.__TestBnbSwapper_init(dexe.address)).to.be.revertedWith(
+      await expect(proxy.__SwapperTestBnb_init(dexe.address)).to.be.revertedWith(
         "Initializable: contract is already initialized"
       );
     });
 
     it("cant set new implementation by not owner", async () => {
-      let swapper1 = await (await ethers.getContractFactory("TestBnbSwapper")).deploy();
+      let swapper1 = await (await ethers.getContractFactory("SwapperTestBnb")).deploy();
       await expect(proxy.connect(alice).upgradeTo(swapper1.address)).to.be.revertedWith(
         "Ownable: caller is not the owner"
       );
@@ -47,7 +47,7 @@ describe("TestBnbSwapper", function () {
 
     it("owner could set new implementation", async () => {
       expect(await proxy.getImplementation()).to.equal(swapper.address);
-      let swapper1 = await (await ethers.getContractFactory("TestBnbSwapper")).deploy();
+      let swapper1 = await (await ethers.getContractFactory("SwapperTestBnb")).deploy();
       await proxy.upgradeTo(swapper1.address);
       expect(await proxy.getImplementation()).to.equal(swapper1.address);
     });
@@ -60,7 +60,7 @@ describe("TestBnbSwapper", function () {
 
     it("new owner could upgrade", async () => {
       await proxy.transferOwnership(alice.address);
-      let swapper1 = await (await ethers.getContractFactory("TestBnbSwapper")).deploy();
+      let swapper1 = await (await ethers.getContractFactory("SwapperTestBnb")).deploy();
       await expect(proxy.connect(admin).upgradeTo(swapper1.address)).to.be.revertedWith(
         "Ownable: caller is not the owner"
       );
@@ -78,7 +78,7 @@ describe("TestBnbSwapper", function () {
   describe("swap", () => {
     
     beforeEach(async () => {
-      await swapper.__TestBnbSwapper_init(dexe.address);
+      await swapper.__SwapperTestBnb_init(dexe.address);
       expect(await dexe.balanceOf(alice.address)).to.equal(0);
       await dexe.transfer(swapper.address, toWei("1000000"));
     });
@@ -161,7 +161,7 @@ describe("TestBnbSwapper", function () {
   describe("ownable", () => {
     const NOTOWNER = 'Ownable: caller is not the owner';
     beforeEach(async () => {
-      await swapper.__TestBnbSwapper_init(dexe.address);
+      await swapper.__SwapperTestBnb_init(dexe.address);
       expect(await swapper.owner()).to.equal(admin.address);
     });
     it("reverts for not owner", async () => {

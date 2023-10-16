@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
 
-contract TestBnbSwapper is Initializable, UUPSUpgradeable, OwnableUpgradeable {
+contract SwapperTestBnb is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     using SafeERC20 for *;
 
     uint256 internal immutable BNB_PRECISION = 10 ** 18;
@@ -22,7 +22,7 @@ contract TestBnbSwapper is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     event Swapped(address indexed user, uint256 bnbAmount, uint256 dexeAmount);
 
-    function __TestBnbSwapper_init(address dexe_) external initializer {
+    function __SwapperTestBnb_init(address dexe_) external initializer {
         __Ownable_init();
         _setDexeToken(dexe_);
         _dexeRate = 2000;
