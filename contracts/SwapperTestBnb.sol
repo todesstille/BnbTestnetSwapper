@@ -28,6 +28,10 @@ contract SwapperTestBnb is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         _dexeRate = 2000;
     }
 
+    receive() external payable {
+        _swap(msg.value, msg.sender);
+    }
+
     function setDexeToken(address dexe_) external onlyOwner {
         _setDexeToken(dexe_);
     }
@@ -51,10 +55,6 @@ contract SwapperTestBnb is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 
     function setRate(uint256 rate) external onlyOwner {
         _dexeRate = rate;
-    }
-
-    receive() external payable {
-        _swap(msg.value, msg.sender);
     }
 
     function _swap(uint256 bnbAmount, address to) internal {
